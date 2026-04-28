@@ -51,5 +51,6 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         Debug.Log("[Player] Game Over.");
         GetComponent<PlayerController>().OnDeath();
+        FindObjectOfType<GameOverManager>().AtivarTelaGameOver();
     }
 }
