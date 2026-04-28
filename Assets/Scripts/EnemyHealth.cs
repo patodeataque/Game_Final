@@ -7,6 +7,8 @@ public class EnemyHealth : MonoBehaviour
 
     private Animator animator;
     private EnemyAI ai;
+    public AudioSource damageSFX;
+    public AudioSource deathSFX;    
     private bool isDead = false;
 
     void Awake()
@@ -24,9 +26,15 @@ public class EnemyHealth : MonoBehaviour
         Debug.Log($"[Inimigo] Levou {amount} de dano. HP: {currentHealth}/{maxHealth}");
 
         if (currentHealth <= 0)
+        {
+            deathSFX.PlayOneShot(deathSFX.clip);
             Die();
+        }
         else
+        {
+            damageSFX.PlayOneShot(damageSFX.clip);
             animator.SetTrigger("Hit");
+        }
     }
 
     void Die()

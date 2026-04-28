@@ -47,6 +47,9 @@ public class EnemyAI : MonoBehaviour
     public AudioSource chaseGrowl;
     public AudioSource swing;
 
+    public float cooldown = 2.6f;
+    private float lastPlayTime = -Mathf.Infinity;
+
     [Header("Perseguição")]
     public float pathUpdateInterval = 0.15f;
     private float pathUpdateTimer   = 0f;
@@ -229,8 +232,11 @@ public class EnemyAI : MonoBehaviour
 
                 if (attackTimer <= 0f && !isAttacking && attackingTimeout <= 0f)
                 {
-                    attackTimer      = attackCooldown;
-                    patrolGrowl.PlayDelayed(0.0f);
+                    // isAttacking = true;
+                    attackTimer = attackCooldown;
+                    // swing.PlayDelayed(0.6f); COMENTAR ESSA LINHA RESOLVE BUG QUE TRAVAVA O MAYNARD
+                    // patrolGrowl.PlayDelayed(0.0f);
+                    HandleAttackSFX();
                     animator.ResetTrigger("Attack");
                     animator.SetTrigger("Attack");
                 }
@@ -320,13 +326,28 @@ public class EnemyAI : MonoBehaviour
         {
             if (!footstepSource.isPlaying)
                 footstepSource.Play();
-            footstepSource.pitch = currentState == State.Chase ? 1.25f : 1.1f;
+            footstepSource.pitch = currentState == State.Chase ? 1.67f : 1.1f;
         }
         else
         {
             if (footstepSource.isPlaying)
                 footstepSource.Stop();
         }
+    }
+
+    public void HandleAttackSFX()
+    {
+        // If still on cooldown, ignore the call
+        if (Time.time < lastPlayTime + cooldown)
+            return;
+
+        lastPlayTime = Time.time;
+
+        if (patrolGrowl != null && patrolGrowl.clip != null)
+            patrolGrowl.PlayOneShot(patrolGrowl.clip);
+
+        if (swing != null && swing.clip != null)
+            swing.PlayDelayed(0.6f);
     }
 
     // ─── Utilitários ──────────────────────────────────────────────────────────

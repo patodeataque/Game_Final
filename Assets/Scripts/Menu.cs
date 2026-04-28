@@ -5,6 +5,9 @@ public class Menu : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
     public GameObject menuOpcoes, rawImage;
+
+    public AudioSource confirm;
+    public bool has_confirmed = false;
     void Start()
     {
         rawImage.SetActive(false);
@@ -15,7 +18,11 @@ public class Menu : MonoBehaviour
     {
         if (!videoPlayer.isPlaying && Input.anyKeyDown)
         {
-            Debug.Log("oi");
+            if (!has_confirmed)
+            {
+                confirm.PlayOneShot(confirm.clip);
+                has_confirmed = true;
+            }
             videoPlayer.Play();
             rawImage.SetActive(true);
             menuOpcoes.SetActive(true);
